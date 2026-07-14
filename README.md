@@ -6,7 +6,7 @@
 ![Backend](https://img.shields.io/badge/backend-FastAPI-009688)
 ![Frontend](https://img.shields.io/badge/frontend-React%20%2B%20Vite-646CFF)
 ![Tests](https://img.shields.io/badge/tests-pytest-brightgreen)
-![CI](https://img.shields.io/badge/CI-GitHub%20Actions-2088FF)
+![CI](https://github.com/Joshuabarradas234/xpx/actions/workflows/ci.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
 > Submit a salary-advance request → get a **risk score**, see **why** (top drivers + the policy that fired), and receive a **recommended action** (Approve / Review / Decline).
