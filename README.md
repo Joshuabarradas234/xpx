@@ -192,7 +192,7 @@ Recorded as lightweight ADRs:
 ---
 
 ## Security & compliance notes
-- No secrets in code — configuration via environment variables (`.env` is git-ignored; see `.env.example`).
+- No secrets in code — configuration via environment variables (`.env.example → frontend/.env.example`).
 - Synthetic inputs only; no real PII.
 - Deterministic, explainable decision logic with policy citations for auditability.
 - Structured JSON responses suitable for downstream audit logging.
