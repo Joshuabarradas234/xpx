@@ -161,7 +161,7 @@ pytest
 ## Repository structure
 
 ```
-xpx-score-explain-act/
+xpx/
 ├── backend/
 │   ├── app/main.py            # FastAPI: /health, /score, rules + model-stub, explainability
 │   ├── tests/test_api.py      # pytest suite
@@ -192,7 +192,7 @@ Recorded as lightweight ADRs:
 ---
 
 ## Security & compliance notes
-- No secrets in code — configuration via environment variables (`.env.example → frontend/.env.example`).
+- No secrets in code — configuration via environment variables (`.env` is git-ignored; see `frontend/.env.example`).
 - Synthetic inputs only; no real PII.
 - Deterministic, explainable decision logic with policy citations for auditability.
 - Structured JSON responses suitable for downstream audit logging.
