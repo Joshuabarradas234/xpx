@@ -1,5 +1,4 @@
 
-```markdown
 # XPX — Score → Explain → Act
 
 ### Explainable salary-advance risk decisioning — designed & prototyped for XPX Technologies under contract
