@@ -128,13 +128,3 @@ xpx/
 
 MIT — see [LICENSE](LICENSE).
 ```
-
-**Two things before you commit:**
-
-1. **Check the evidence table against your actual filenames.** I listed screenshots 06, 07, 09 — the ones your original index referenced. If your real files are named differently, adjust that table to match, and list whichever screenshots genuinely exist (minus 10). If you're not sure, open `docs/screenshots/` and tell me the filenames and I'll fix the table exactly.
-
-2. **You still need to delete the image file** `docs/screenshots/10-env-configuration.png` itself — removing its table row here doesn't delete the file. Do that as a separate step (navigate to it → ⋯ → Delete file).
-
-Commit message: `Reframe README as XPX contract work; remove env screenshot`.
-
-Want the recommendation draft next? For that I just need: what would the owner genuinely say the work delivered — the architecture, the prototype, both — and did it actually feed their product thinking?
