@@ -1,15 +1,21 @@
+
+```markdown
+# XPX — Score → Explain → Act
+
 ### Explainable salary-advance risk decisioning — designed & prototyped for XPX Technologies under contract
 
-![Status](https://img.shields.io/badge/status-demo-blue)
-![Backend](https://img.shields.io/badge/backend-FastAPI-009688)
-![Frontend](https://img.shields.io/badge/frontend-React%20%2B%20Vite-646CFF)
-![Tests](https://img.shields.io/badge/tests-pytest-brightgreen)
+![status](https://img.shields.io/badge/status-demo-blue)
+![backend](https://img.shields.io/badge/backend-FastAPI-009688)
+![frontend](https://img.shields.io/badge/frontend-React%20%2B%20Vite-646CFF)
+![tests](https://img.shields.io/badge/tests-pytest-brightgreen)
 ![CI](https://github.com/Joshuabarradas234/xpx/actions/workflows/ci.yml/badge.svg)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
+![license](https://img.shields.io/badge/license-MIT-lightgrey)
+
+> Cloud engineering contract for **XPX Technologies** (Leeds instant-pay fintech), Nov 2025 – Apr 2026.
+> I was engaged to design the target architecture and build a working prototype of the scoring core.
+> Published with XPX's permission. All data in this repository is synthetic — no real client data or PII.
 
 > Submit a salary-advance request → get a **risk score**, see **why** (top drivers + the policy that fired), and receive a **recommended action** (Approve / Review / Decline).
-
-This repository consolidates two earlier repos for the same project — `xpx-score-explain-act` (README + evidence) and `xpx-grounded-rag-demo` (the working code) — into a single, runnable codebase.
 
 ---
 
@@ -17,142 +23,92 @@ This repository consolidates two earlier repos for the same project — `xpx-sco
 
 A small, full-stack **risk-decisioning engine** that mirrors how fintech / payroll / lending systems turn an application into an *auditable* decision instead of an opaque score:
 
-1. **Score** — a hybrid of deterministic business rules and a model-style signal produces a 0–100 risk score.
-2. **Explain** — the response returns the top contributing drivers and the exact policy citation.
-3. **Act** — the score maps to a Green / Amber / Red band and an Approve / Review / Decline recommendation.
+1. **Score** — a hybrid of deterministic business rules and a model signal produces a risk band (Green / Amber / Red).
+2. **Explain** — the response returns the top drivers behind the score and the specific policy rule that fired.
+3. **Act** — a recommended action (Approve / Review / Decline), not just a number.
 
-The backend is a FastAPI service; the frontend is a React + Vite UI for exercising it. It runs entirely locally on synthetic inputs — **no real personal or financial data**.
+The scoring core is built and runnable. The wider platform around it (cloud storage, offline ML training, real-time serving, ops) is **designed, not deployed** — see the status table below.
 
 ---
 
 ## Implementation status (what's real vs. designed)
 
-Being explicit about this is deliberate — the decisioning flow is built and tested; the cloud/ML platform around it is a design.
-
-| Capability | Status |
-| --- | --- |
-| `GET /health` + `POST /score` FastAPI service | ✅ Implemented & tested |
-| Hybrid rules + model-style scoring, 0–100 | ✅ Implemented |
-| Explainability: top drivers + policy citation | ✅ Implemented |
-| React + Vite UI (form → score → explanation → raw JSON) | ✅ Implemented |
+| Area | Status |
+|---|---|
+| `/health` and `/score` API (FastAPI) | ✅ Implemented |
+| Hybrid rules + model-signal scoring, risk banding | ✅ Implemented |
+| Explainability — top drivers + policy citation in response | ✅ Implemented |
+| React + Vite frontend (request → score → explanation) | ✅ Implemented |
 | pytest suite, Dockerfiles, docker-compose, CI workflow | ✅ Implemented |
-| Trained ML model (e.g. GBDT) replacing the stub signal | 🎯 Roadmap |
-| RAG-grounded policy retrieval (vector/keyword search) | 🎯 Roadmap |
-| Azure-native production platform (see architecture below) | 📐 Designed, not deployed |
-| Audit-log persistence, drift/fairness monitoring, RBAC | 📐 Designed, not deployed |
+| Trained ML model (the current model signal is a stub) | 🎯 Roadmap |
+| Anomaly detection, SHAP explainability | 🎯 Roadmap |
+| RAG-grounded policy retrieval | 🎯 Roadmap |
+| Azure platform (ADLS, Azure ML, online endpoint, ops/sec) | 📐 Designed, not deployed |
 
-The "model" signal is currently a transparent, deterministic stub so the *combination* of model + rules is demonstrable end-to-end; swapping in a real model is the next step and does not change the API contract.
+Legend: ✅ built and runnable · 🎯 planned next step · 📐 designed in the architecture, not implemented here.
+
+---
+
+## Architecture (designed)
+
+The target architecture is a six-layer, GDPR-first design: synthetic-data ingestion → governed storage with lineage → offline ML (risk model + anomaly detection + SHAP explainability) → real-time scoring API → employee/employer surfaces → an ops layer covering drift monitoring, fairness checks and immutable audit logs.
+
+This is the **design deliverable** from the engagement. The diagram lives in [`docs/architecture/`](docs/architecture). The code in this repository implements the scoring core at the centre of it, not the full platform.
+
+---
+
+## Run it locally
+
+```bash
+# Backend
+cd backend
+pip install -r requirements-dev.txt
+uvicorn app.main:app --reload   # http://127.0.0.1:8000
+
+# Frontend
+cd frontend
+npm install
+npm run dev                     # http://localhost:5173
+```
+
+The frontend reads the API base URL from `VITE_API_BASE` (see `frontend/.env.example`); it defaults to `http://127.0.0.1:8000`.
+
+Or run both with Docker:
+
+```bash
+docker compose up --build
+```
+
+---
+
+## Tests & CI
+
+```bash
+cd backend
+pytest -q
+```
+
+GitHub Actions runs the backend (ruff + pytest) and frontend (eslint + build) on every push and pull request — see the CI badge above.
 
 ---
 
 ## Evidence
 
-Running locally — full set in [`docs/screenshots/`](docs/screenshots).
+Screenshots of the running prototype are in [`docs/screenshots/`](docs/screenshots):
 
-| Health check | Explainable score response | Frontend result |
-| --- | --- | --- |
-| ![Health](docs/screenshots/06-api-health-check.png) | ![Score](docs/screenshots/07-explainable-score-response.png) | ![UI](docs/screenshots/09-frontend-ui-result.png) |
-
----
-
-## Architecture
-
-The diagram below is an **Azure-native reference architecture I designed** for how this decisioning logic would be deployed and scaled in production (EU hosting, GDPR-first, synthetic data only). It represents the target design — **not a deployed environment**. The code in this repo implements the core Score → Explain → Act logic that sits at the centre of it.
-
-![Architecture](docs/architecture/xpx-architecture.png)
-
-Full six-layer walkthrough: [`docs/architecture.md`](docs/architecture.md).
+| # | File | Shows |
+|---|------|-------|
+| 06 | `06-frontend-decision.png` | Frontend: request → risk band + explanation |
+| 07 | `07-score-response.png` | `/score` API response with drivers and policy citation |
+| 09 | `09-tests-passing.png` | pytest suite passing |
 
 ---
 
-## API
+## Security & data notes
 
-### `GET /health`
-```json
-{ "status": "ok" }
-```
-
-### `POST /score?mode=ML_PLUS_RULES`
-`mode` is `RULES_ONLY` or `ML_PLUS_RULES` (default).
-
-Request:
-```json
-{
-  "amount": 2500,
-  "employer": "XP Demo Employer",
-  "pay_frequency": "monthly",
-  "tenure_months": 12,
-  "repayment_history_score": 700
-}
-```
-
-Response:
-```json
-{
-  "request_id": "REQ-demo-001",
-  "mode": "ML_PLUS_RULES",
-  "risk_score": 44,
-  "risk_band": "Amber",
-  "top_drivers": [
-    "High advance amount (>= 2000)",
-    "Established tenure (>= 12 months)",
-    "Strong repayment history (score >= 650)"
-  ],
-  "recommended_action": "Request Documents / Manual Review",
-  "policy_citation": "Policy PX-ADV-01: Tenure < 3 months OR repayment score < 580 ⇒ review/decline",
-  "ml_score": 0.35
-}
-```
-
-Interactive docs (Swagger/OpenAPI) at `http://127.0.0.1:8000/docs`.
-
----
-
-## Getting started
-
-**Prerequisites:** Python 3.10+, Node.js 18+, npm. (Docker optional.)
-
-### Backend
-```bash
-cd backend
-python -m venv .venv && source .venv/bin/activate    # Windows: .\.venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
-
-### Frontend (new terminal)
-```bash
-cd frontend
-npm install
-npm run dev            # serves http://localhost:5173
-```
-
-### Both at once (from repo root)
-```bash
-npm install            # installs 'concurrently'
-npm run dev
-```
-
-### With Docker
-```bash
-docker compose up --build
-# backend → http://localhost:8000 , frontend → http://localhost:5173
-```
-
-### Tests
-```bash
-cd backend
-pip install -r requirements-dev.txt
-pytest
-```
-
----
-
-## Tech stack
-
-**Backend:** Python · FastAPI · Uvicorn · Pydantic
-**Frontend:** React 19 · Vite · Fetch API
-**Tooling:** pytest · ruff · Docker / docker-compose · GitHub Actions
+- All data in this repository is **synthetic** — no real client data, no PII.
+- No secrets in code — configuration is via environment variables (`.env` is git-ignored; see `frontend/.env.example`).
+- Least-privilege access, Key Vault, private endpoints and immutable audit logging are part of the **designed** Azure architecture, not implemented in this prototype.
 
 ---
 
@@ -160,46 +116,26 @@ pytest
 
 ```
 xpx/
-├── backend/
-│   ├── app/main.py            # FastAPI: /health, /score, rules + model-stub, explainability
-│   ├── tests/test_api.py      # pytest suite
-│   ├── requirements.txt
-│   ├── requirements-dev.txt
-│   └── Dockerfile
-├── frontend/                  # React + Vite UI
-│   ├── src/App.jsx
-│   └── Dockerfile
-├── docs/
-│   ├── architecture.md        # six-layer design walkthrough
-│   ├── architecture/          # architecture diagram
-│   ├── adr/                   # architecture decision records
-│   └── screenshots/           # running evidence (indexed)
-├── .github/workflows/ci.yml   # lint + test (backend) · lint + build (frontend)
+├── backend/          # FastAPI service + pytest
+├── frontend/         # React + Vite UI
+├── docs/             # architecture, ADRs, screenshots
 ├── docker-compose.yml
-└── package.json               # root dev orchestrator
+└── .github/workflows/ci.yml
 ```
 
 ---
 
-## Design decisions
-
-Recorded as lightweight ADRs:
-- [ADR-0001 — Hybrid rules + model scoring](docs/adr/0001-hybrid-rules-plus-ml.md)
-- [ADR-0002 — Synthetic data only](docs/adr/0002-synthetic-data-only.md)
-
----
-
-## Security & compliance notes
-- No secrets in code — configuration via environment variables (`.env` is git-ignored; see `frontend/.env.example`).
-- Synthetic inputs only; no real PII.
-- Deterministic, explainable decision logic with policy citations for auditability.
-- Structured JSON responses suitable for downstream audit logging.
-
----
-
-## Notes & scope
-- Portfolio / demonstration project. The scoring is illustrative, not production-grade.
-- Do not submit real personal or financial data.
-
 ## License
+
 MIT — see [LICENSE](LICENSE).
+```
+
+**Two things before you commit:**
+
+1. **Check the evidence table against your actual filenames.** I listed screenshots 06, 07, 09 — the ones your original index referenced. If your real files are named differently, adjust that table to match, and list whichever screenshots genuinely exist (minus 10). If you're not sure, open `docs/screenshots/` and tell me the filenames and I'll fix the table exactly.
+
+2. **You still need to delete the image file** `docs/screenshots/10-env-configuration.png` itself — removing its table row here doesn't delete the file. Do that as a separate step (navigate to it → ⋯ → Delete file).
+
+Commit message: `Reframe README as XPX contract work; remove env screenshot`.
+
+Want the recommendation draft next? For that I just need: what would the owner genuinely say the work delivered — the architecture, the prototype, both — and did it actually feed their product thinking?
