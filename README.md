@@ -1,6 +1,4 @@
-# XPX — Score → Explain → Act
-
-### Explainable salary-advance risk decisioning (portfolio demo)
+### Explainable salary-advance risk decisioning — designed & prototyped for XPX Technologies under contract
 
 ![Status](https://img.shields.io/badge/status-demo-blue)
 ![Backend](https://img.shields.io/badge/backend-FastAPI-009688)
