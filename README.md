@@ -93,13 +93,24 @@ GitHub Actions runs the backend (ruff + pytest) and frontend (eslint + build) on
 
 ## Evidence
 
-Screenshots of the running prototype are in [`docs/screenshots/`](docs/screenshots):
+Screenshots of the running prototype:
 
-| # | File | Shows |
-|---|------|-------|
-| 06 | `06-frontend-decision.png` | Frontend: request → risk band + explanation |
-| 07 | `07-score-response.png` | `/score` API response with drivers and policy citation |
-| 09 | `09-tests-passing.png` | pytest suite passing |
+**Frontend — request input**
+
+![Frontend input](docs/screenshots/08-frontend-ui-input.png)
+
+**Frontend — risk band + explanation**
+
+![Frontend result](docs/screenshots/09-frontend-ui-result.png)
+
+**Explainable `/score` API response (drivers + policy citation)**
+
+![Score response](docs/screenshots/07-explainable-score-response.png)
+
+**API health check**
+
+![Health check](docs/screenshots/06-api-health-check.png)
+
 
 ---
 
