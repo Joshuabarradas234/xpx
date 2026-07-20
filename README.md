@@ -53,6 +53,7 @@ Legend: ✅ built and runnable · 🎯 planned next step · 📐 designed in the
 The target architecture is a six-layer, GDPR-first design: synthetic-data ingestion → governed storage with lineage → offline ML (risk model + anomaly detection + SHAP explainability) → real-time scoring API → employee/employer surfaces → an ops layer covering drift monitoring, fairness checks and immutable audit logs.
 
 This is the **design deliverable** from the engagement. The diagram lives in [`docs/architecture/`](docs/architecture). The code in this repository implements the scoring core at the centre of it, not the full platform.
+![XPX six-layer architecture](docs/architecture/xpx-architecture.png)
 
 ---
 
