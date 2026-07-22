@@ -13,4 +13,3 @@ Consolidated and de-duplicated from both source repos.
 | 07 | `07-explainable-score-response.png` | Score response: band + drivers + policy citation |
 | 08 | `08-frontend-ui-input.png` | UI with request details entered |
 | 09 | `09-frontend-ui-result.png` | UI result: score, drivers, action, raw JSON |
-| 10 | `10-env-configuration.png` | Environment-based configuration (secrets kept out of code) |
